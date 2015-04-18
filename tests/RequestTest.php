@@ -48,7 +48,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ]
         )->thenReturn($httpRequest);
 
-        $request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
+        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', $requestArray, $client, $loop);
         Phake::when($request)->setupRequest()->thenCallparent();
         Phake::when($request)->setupListeners($httpRequest)->thenCallParent();
         Phake::when($request)->setConnectionTimeout($httpRequest)->thenReturn(null);
@@ -100,7 +100,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
 
         $client = Phake::mock('React\HttpClient\Client');
-        $request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
+        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', $requestArray, $client, $loop);
 
         $httpClientRequest = Phake::mock('React\HttpClient\Request');
         $request->setConnectionTimeout($httpClientRequest);
@@ -120,7 +120,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
 
         $client = Phake::mock('React\HttpClient\Client');
-        $request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
+        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', $requestArray, $client, $loop);
 
         $httpClientRequest = Phake::mock('React\HttpClient\Request');
         $request->setRequestTimeout($httpClientRequest);

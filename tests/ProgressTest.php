@@ -12,7 +12,7 @@ namespace WyriHaximus\React\Tests\Guzzle\HttpClient;
 
 use Phake;
 use React\HttpClient\Response;
-use WyriHaximus\React\RingPHP\HttpClient\Progress;
+use WyriHaximus\React\Guzzle\HttpClient\Progress;
 
 /**
  * Class ProgressTest

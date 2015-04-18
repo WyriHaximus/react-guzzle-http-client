@@ -11,7 +11,7 @@
 namespace WyriHaximus\React\Tests\Guzzle\HttpClient;
 
 use Phake;
-use WyriHaximus\React\RingPHP\HttpClient\RequestFactory;
+use WyriHaximus\React\Guzzle\HttpClient\RequestFactory;
 
 /**
  * Class RequestFactoryTest

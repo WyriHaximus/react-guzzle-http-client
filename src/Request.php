@@ -10,7 +10,6 @@
  */
 namespace WyriHaximus\React\Guzzle\HttpClient;
 
-use GuzzleHttp\Message\MessageFactory;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as ReactHttpClient;
 use React\HttpClient\Request as HttpRequest;
@@ -40,11 +39,6 @@ class Request
      * @var HttpResponse
      */
     protected $httpResponse;
-
-    /**
-     * @var MessageFactory
-     */
-    protected $messageFactory;
 
     /**
      * @var string
@@ -118,7 +112,6 @@ class Request
         $this->request = array_replace_recursive($this->requestDefaults, $request);
         $this->httpClient = $httpClient;
         $this->loop = $loop;
-        $this->messageFactory = new MessageFactory();
 
         if ($progress instanceof ProgressInterface) {
             $this->progress = $progress;

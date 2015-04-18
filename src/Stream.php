@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace WyriHaximus\React\RingPHP\HttpClient;
+namespace WyriHaximus\React\Guzzle\HttpClient;
 
 use GuzzleHttp\Stream\StreamInterface;
 use GuzzleHttp\Stream\Utils as GuzzleUtils;
@@ -20,13 +20,58 @@ use GuzzleHttp\Stream\Utils as GuzzleUtils;
  */
 class Stream implements StreamInterface
 {
+    const OVERFLOW_LEVEL = 21632; // 2MB
+
     protected $stream;
     protected $eof = false;
     protected $size = 0;
     protected $buffer = '';
     protected $loop;
+    protected $overflowStream;
 
     public function __construct(array $options)
+    {
+        $this->loop = $options['loop'];
+
+        /*if (class_exists('React\Filesystem\Filesystem')) {
+            $this->setUpFilesystemStream($options);
+            return;
+        }*/
+
+        $this->setUpNormalStream($options);
+    }
+
+    protected function setUpFilesystemStream(array $options)
+    {
+        $this->overflowStream = new FileCacheStream([
+            'loop' => $this->loop,
+        ]);
+
+        $options['response']->on(
+            'data',
+            function ($data) {
+                if ($this->size >= static::OVERFLOW_LEVEL && $this->overflowStream->isOpen()) {
+                    return $this->overflowStream->write($data);
+                }
+
+                if ($this->size >= static::OVERFLOW_LEVEL && !$this->overflowStream->isOpen() &&!$this->overflowStream->isOpening() ) {
+                    $this->overflowStream->open();
+                }
+
+                $this->buffer .= $data;
+                $this->size = strlen($this->buffer);
+            }
+        );
+
+        $options['request']->on(
+            'end',
+            function () {
+                $this->eof = true;
+            }
+        );
+    }
+
+    protected function setUpNormalStream(array $options)
     {
         $options['response']->on(
             'data',
@@ -35,14 +80,13 @@ class Stream implements StreamInterface
                 $this->size = strlen($this->buffer);
             }
         );
+
         $options['request']->on(
             'end',
             function () {
                 $this->eof = true;
             }
         );
-
-        $this->loop = $options['loop'];
     }
 
     public function eof()

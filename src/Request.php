@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace WyriHaximus\React\RingPHP\HttpClient;
+namespace WyriHaximus\React\Guzzle\HttpClient;
 
 use GuzzleHttp\Message\MessageFactory;
 use React\EventLoop\LoopInterface;

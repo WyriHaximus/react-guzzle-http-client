@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "guzzlehttp/ringphp": "~1.0",
         "react/http-client": "^0.4"
     },
     "require-dev": {

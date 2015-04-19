@@ -204,4 +204,11 @@ class Stream implements StreamInterface
             $this->loop->tick();
         }
     }
+
+    /**
+     * For Guzzle v4 compatibility
+     */
+    public function flush()
+    {
+    }
 }

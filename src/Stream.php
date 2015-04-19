@@ -54,7 +54,11 @@ class Stream implements StreamInterface
                     return $this->overflowStream->write($data);
                 }
 
-                if ($this->size >= static::OVERFLOW_LEVEL && !$this->overflowStream->isOpen() &&!$this->overflowStream->isOpening() ) {
+                if (
+                    $this->size >= static::OVERFLOW_LEVEL &&
+                    !$this->overflowStream->isOpen() &&
+                    !$this->overflowStream->isOpening()
+                ) {
                     $this->overflowStream->open();
                 }
 

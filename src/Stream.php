@@ -150,7 +150,7 @@ class Stream implements StreamInterface
         return $buffer;
     }
 
-    public function getContents()
+    public function getContents($maxLength = -1)
     {
         $buffer = '';
         while (!$this->eof()) {

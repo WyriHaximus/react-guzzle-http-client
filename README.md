@@ -1,6 +1,3 @@
-ReactGuzzleRing
-===============
-
 [![Build Status](https://travis-ci.org/WyriHaximus/react-guzzle-http-client.png)](https://travis-ci.org/WyriHaximus/react-guzzle-http-client)
 [![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-guzzle-http-client/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-http-client)
 [![Total Downloads](https://poser.pugx.org/WyriHaximus/react-guzzle-http-client/downloads.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-http-client)

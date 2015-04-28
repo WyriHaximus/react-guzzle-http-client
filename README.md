@@ -1,54 +1,13 @@
 ReactGuzzleRing
 ===============
 
-[![Build Status](https://travis-ci.org/WyriHaximus/ReactGuzzleRing.png)](https://travis-ci.org/WyriHaximus/ReactGuzzleRing)
-[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-guzzle-ring/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-ring)
-[![Total Downloads](https://poser.pugx.org/WyriHaximus/react-guzzle-ring/downloads.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-ring)
-[![Coverage Status](https://coveralls.io/repos/WyriHaximus/ReactGuzzleRing/badge.png)](https://coveralls.io/r/WyriHaximus/ReactGuzzleRing)
-[![License](https://poser.pugx.org/wyrihaximus/react-guzzle-ring/license.png)](https://packagist.org/packages/wyrihaximus/react-guzzle-ring)
+[![Build Status](https://travis-ci.org/WyriHaximus/react-guzzle-http-client.png)](https://travis-ci.org/WyriHaximus/react-guzzle-http-client)
+[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-guzzle-http-client/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-http-client)
+[![Total Downloads](https://poser.pugx.org/WyriHaximus/react-guzzle-http-client/downloads.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-http-client)
+[![Coverage Status](https://coveralls.io/repos/WyriHaximus/react-guzzle-http-client/badge.png)](https://coveralls.io/r/WyriHaximus/react-guzzle-http-client)
+[![License](https://poser.pugx.org/wyrihaximus/react-guzzle-http-client/license.png)](https://packagist.org/packages/wyrihaximus/react-guzzle-http-client)
 
-ReactPHP HttpClient Adapter for Guzzle5, for Guzzle4 check [ReactGuzzle](https://github.com/WyriHaximus/ReactGuzzle)
-
-### Installation ###
-
-To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `~`.
-
-```
-composer require wyrihaximus/react-guzzle-ring 
-```
-
-### Example ###
-
-```php
-<?php
-
-require 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-
-$loop = \React\EventLoop\Factory::create();
-$handler = new \WyriHaximus\React\RingPHP\HttpClientAdapter($loop);
-
-$client = new \GuzzleHttp\Client([
-    'handler' => $handler,
-]);
-
-$client->get('http://github.com/', [ // This will redirect to https://github.com/
-    'future' => true,
-])->then(function ($response) {
-    var_export($response);
-    var_export((string) $response->getBody());
-});
-
-$client->get('http://php.net/', [
-    'future' => true,
-])->then(function ($response) {
-    var_export($response);
-    var_export((string) $response->getBody());
-});
-
-$loop->run();
-```
-
-See the [examples](https://github.com/WyriHaximus/ReactGuzzleRing/tree/master/examples) directory for more ways to use this handler.
+Meta package for ReactPHP HttpClient adapters/handles for Guzzle [4](https://github.com/WyriHaximus/ReactGuzzle), [5](https://github.com/WyriHaximus/ReactGuzzleRing), and [6](https://github.com/WyriHaximus/react-guzzle-psr7).
 
 ## Contributing ##
 
@@ -56,7 +15,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## License ##
 
-Copyright 2014 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2015 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

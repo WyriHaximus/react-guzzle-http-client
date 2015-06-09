@@ -117,6 +117,11 @@ class Stream implements StreamInterface
         return false;
     }
 
+    public function rewind()
+    {
+        return false;
+    }
+
     public function isWritable()
     {
         return false;

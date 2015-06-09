@@ -10,8 +10,7 @@
  */
 namespace WyriHaximus\React\Guzzle\HttpClient;
 
-use GuzzleHttp\Stream\StreamInterface;
-use GuzzleHttp\Stream\Utils as GuzzleUtils;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Class Stream

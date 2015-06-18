@@ -10,6 +10,7 @@
  */
 namespace WyriHaximus\React\Guzzle\HttpClient;
 
+use Psr\Http\Message\RequestInterface;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as HttpClient;
 
@@ -20,8 +21,8 @@ use React\HttpClient\Client as HttpClient;
  */
 class RequestFactory
 {
-    public function create(array $request, HttpClient $httpClient, LoopInterface $loop)
+    public function create(RequestInterface $request, array $options, HttpClient $httpClient, LoopInterface $loop)
     {
-        return Request::send($request, $httpClient, $loop);
+        return Request::send($request, $options, $httpClient, $loop);
     }
 }

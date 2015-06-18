@@ -10,6 +10,8 @@
  */
 namespace WyriHaximus\React\Guzzle\HttpClient;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as ReactHttpClient;
 use React\HttpClient\Request as HttpRequest;
@@ -78,12 +80,12 @@ class Request
     /**
      * @var array
      */
-    protected $request;
+    protected $options;
 
     /**
      * @var array
      */
-    protected $requestDefaults = [
+    protected $defaultOptions = [
         'client' => [
             'stream' => false,
             'connect_timeout' => 0,
@@ -93,30 +95,37 @@ class Request
     ];
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
      * @var bool
      */
     protected $connectionTimedOut = false;
 
     /**
-     * @param array $request
+     * @param RequestInterface $request
      * @param ReactHttpClient $httpClient
      * @param LoopInterface $loop
      * @param ProgressInterface $progress
      */
     protected function __construct(
-        array $request,
+        RequestInterface $request,
+        array $options,
         ReactHttpClient $httpClient,
         LoopInterface $loop,
         ProgressInterface $progress = null
     ) {
-        $this->request = array_replace_recursive($this->requestDefaults, $request);
+        $this->request = $request;
+        $this->options = array_replace_recursive($this->defaultOptions, $options);
         $this->httpClient = $httpClient;
         $this->loop = $loop;
 
         if ($progress instanceof ProgressInterface) {
             $this->progress = $progress;
-        } elseif (isset($this->request['client']['progress']) && is_callable($this->request['client']['progress'])) {
-            $this->progress = new Progress($this->request['client']['progress']);
+        } elseif (isset($this->options['client']['progress']) && is_callable($this->options['client']['progress'])) {
+            $this->progress = new Progress($this->options['client']['progress']);
         } else {
             $this->progress = new Progress(function () {
             });
@@ -124,7 +133,8 @@ class Request
     }
 
     /**
-     * @param array $request
+     * @param RequestInterface $request
+     * @param array $options
      * @param ReactHttpClient $httpClient
      * @param LoopInterface $loop
      * @param ProgressInterface $progress
@@ -132,14 +142,15 @@ class Request
      * @return \React\Promise\Promise
      */
     public static function send(
-        array $request,
+        RequestInterface $request,
+        array $options,
         ReactHttpClient $httpClient,
         LoopInterface $loop,
         ProgressInterface $progress = null,
         Request $requestObject = null
     ) {
         if ($requestObject === null) {
-            $requestObject = new static($request, $httpClient, $loop, $progress);
+            $requestObject = new static($request, $options, $httpClient, $loop, $progress);
         }
         return $requestObject->perform();
     }
@@ -152,7 +163,7 @@ class Request
         $this->deferred = new Deferred();
 
         $this->loop->addTimer(
-            (int)$this->request['client']['delay'] / 1000,
+            (int)$this->options['client']['delay'] / 1000,
             function () {
                 $this->tickRequest();
             }
@@ -170,10 +181,12 @@ class Request
             $request = $this->setupRequest();
             $this->setupListeners($request);
 
-            $this->progress->onSending($this->request['body']);
+            $body = $this->request->getBody()->getContents();
+
+            $this->progress->onSending($body);
 
             $this->setConnectionTimeout($request);
-            $request->end((string)$this->request['body']);
+            $request->end($body);
             $this->setRequestTimeout($request);
         });
     }
@@ -184,10 +197,10 @@ class Request
     protected function setupRequest()
     {
         $headers = [];
-        foreach ($this->request['headers'] as $key => $values) {
+        foreach ($this->request->getHeaders() as $key => $values) {
             $headers[$key] = implode(';', $values);
         }
-        return $this->httpClient->request($this->request['http_method'], $this->request['url'], $headers);
+        return $this->httpClient->request($this->request->getMethod(), (string)$this->request->getUri(), $headers);
     }
 
     /**
@@ -232,9 +245,9 @@ class Request
      */
     public function setConnectionTimeout(HttpRequest $request)
     {
-        if ($this->request['client']['connect_timeout'] > 0) {
+        if ($this->options['client']['connect_timeout'] > 0) {
             $this->connectionTimer = $this->loop->addTimer(
-                $this->request['client']['connect_timeout'],
+                $this->options['client']['connect_timeout'],
                 function () use ($request) {
                     $request->closeError(new \Exception('Connection time out'));
                 }
@@ -247,9 +260,9 @@ class Request
      */
     public function setRequestTimeout(HttpRequest $request)
     {
-        if ($this->request['client']['timeout'] > 0) {
+        if ($this->options['client']['timeout'] > 0) {
             $this->requestTimer = $this->loop->addTimer(
-                $this->request['client']['timeout'],
+                $this->options['client']['timeout'],
                 function () use ($request) {
                     $request->closeError(new \Exception('Transaction time out'));
                 }
@@ -259,7 +272,7 @@ class Request
 
     protected function onHeadersWritten()
     {
-        if ($this->connectionTimer !== null) {
+        if ($this->connectionTimer !== null && $this->loop->isTimerActive($this->connectionTimer)) {
             $this->loop->cancelTimer($this->connectionTimer);
         }
     }
@@ -271,7 +284,7 @@ class Request
     protected function onResponse(HttpResponse $response, HttpRequest $request)
     {
         $this->httpResponse = $response;
-        if (!empty($this->request['client']['save_to'])) {
+        if (!empty($this->options['client']['save_to'])) {
             $this->saveTo();
             return;
         }
@@ -281,7 +294,7 @@ class Request
 
     protected function saveTo()
     {
-        $saveTo = $this->request['client']['save_to'];
+        $saveTo = $this->options['client']['save_to'];
 
         $writeStream = fopen($saveTo, 'w');
         stream_set_blocking($writeStream, 0);
@@ -310,11 +323,11 @@ class Request
      */
     protected function onError(\Exception $error)
     {
-        if ($this->requestTimer !== null) {
+        if ($this->requestTimer !== null && $this->loop->isTimerActive($this->requestTimer)) {
             $this->loop->cancelTimer($this->requestTimer);
         }
 
-        if ($this->connectionTimer !== null) {
+        if ($this->connectionTimer !== null && $this->loop->isTimerActive($this->connectionTimer)) {
             $this->loop->cancelTimer($this->connectionTimer);
         }
 
@@ -327,11 +340,11 @@ class Request
      */
     protected function onEnd()
     {
-        if ($this->requestTimer !== null) {
+        if ($this->requestTimer !== null && $this->loop->isTimerActive($this->requestTimer)) {
             $this->loop->cancelTimer($this->requestTimer);
         }
 
-        if ($this->connectionTimer !== null) {
+        if ($this->connectionTimer !== null && $this->loop->isTimerActive($this->connectionTimer)) {
             $this->loop->cancelTimer($this->connectionTimer);
         }
 
@@ -351,16 +364,15 @@ class Request
 
         $this->createStream($request);
 
-        $response = [
-            'effective_url' => $this->request['url'],
-            'body' => $this->stream,
-            'headers' => $this->httpResponse->getHeaders(),
-            'status' => $this->httpResponse->getCode(),
-            'reason' => $this->httpResponse->getReasonPhrase(),
-            'version' => $this->httpResponse->getVersion(),
-        ];
+        $response = new Response(
+            $this->httpResponse->getCode(),
+            $this->httpResponse->getHeaders(),
+            $this->stream,
+            $this->httpResponse->getVersion(),
+            $this->httpResponse->getReasonPhrase()
+        );
 
-        if (!$this->request['client']['stream']) {
+        if (!$this->options['client']['stream']) {
             return $request->on('end', function () use ($response) {
                 $this->resolveResponse($response);
             });
@@ -380,7 +392,7 @@ class Request
     {
         $this->stream = new Stream([
             'response' => $this->httpResponse,
-            'request' => $request,
+            'options' => $request,
             'loop' => $this->loop,
         ]);
     }

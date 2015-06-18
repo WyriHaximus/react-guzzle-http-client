@@ -42,6 +42,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             'React\Promise\PromiseInterface',
             $this->requestFactory->create(
+                Phake::mock('Psr\Http\Message\RequestInterface'),
                 [],
                 Phake::partialMock(
                     'React\HttpClient\Client',

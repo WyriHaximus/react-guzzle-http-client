@@ -392,7 +392,7 @@ class Request
     {
         $this->stream = new Stream([
             'response' => $this->httpResponse,
-            'options' => $request,
+            'request' => $request,
             'loop' => $this->loop,
         ]);
     }

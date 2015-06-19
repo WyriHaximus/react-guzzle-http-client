@@ -48,12 +48,34 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ]
         )->thenReturn($httpRequest);
 
-        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', $requestArray, $client, $loop);
+        $psrRequest = Phake::mock('Psr\Http\Message\RequestInterface');
+        Phake::when($psrRequest)->getHeaders()->thenReturn($requestArray['headers']);
+        Phake::when($psrRequest)->getMethod()->thenReturn($requestArray['http_method']);
+        Phake::when($psrRequest)->getUri()->thenReturn($requestArray['url']);
+
+        $psrRequestBody = Phake::mock('Psr\Http\Message\StreamInterface');
+        Phake::when($psrRequestBody)->getContents()->thenReturn($requestArray['body']);
+        Phake::when($psrRequest)->getBody()->thenReturn($psrRequestBody);
+
+        $request = Phake::partialMock(
+            'WyriHaximus\React\Guzzle\HttpClient\Request',
+            $psrRequest,
+            $requestArray,
+            $client,
+            $loop
+        );
         Phake::when($request)->setupRequest()->thenCallparent();
         Phake::when($request)->setupListeners($httpRequest)->thenCallParent();
         Phake::when($request)->setConnectionTimeout($httpRequest)->thenReturn(null);
 
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $request->send($requestArray, $client, $loop, null, $request));
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $request->send(
+            $psrRequest,
+            $requestArray,
+            $client,
+            $loop,
+            null,
+            $request
+        ));
 
         Phake::inOrder(
             Phake::verify($loop)->addTimer(
@@ -100,7 +122,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
 
         $client = Phake::mock('React\HttpClient\Client');
-        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', $requestArray, $client, $loop);
+        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', Phake::mock('Psr\Http\Message\RequestInterface'), $requestArray, $client, $loop);
 
         $httpClientRequest = Phake::mock('React\HttpClient\Request');
         $request->setConnectionTimeout($httpClientRequest);
@@ -120,7 +142,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
 
         $client = Phake::mock('React\HttpClient\Client');
-        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', $requestArray, $client, $loop);
+        $request = Phake::partialMock('WyriHaximus\React\Guzzle\HttpClient\Request', Phake::mock('Psr\Http\Message\RequestInterface'), $requestArray, $client, $loop);
 
         $httpClientRequest = Phake::mock('React\HttpClient\Request');
         $request->setRequestTimeout($httpClientRequest);

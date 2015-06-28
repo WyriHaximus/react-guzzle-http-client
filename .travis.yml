@@ -22,8 +22,6 @@ matrix:
       env: dependencies=lowest
     - php: hhvm
       env: dependencies=lowest
-    - php: hhvm-nightly
-      env: dependencies=lowest
     - php: 5.4
       env: dependencies=highest
     - php: 5.5
@@ -34,10 +32,6 @@ matrix:
       env: dependencies=highest
     - php: hhvm
       env: dependencies=highest
-    - php: hhvm-nightly
-      env: dependencies=highest
-  allow_failures:
-    - php: hhvm-nightly
 
 before_script:
   - composer self-update -q

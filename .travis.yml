@@ -1,6 +1,10 @@
 language: php
-sudo: false
-cache: composer
+
+## Cache composer bits
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
 
 ## PHP versions we test against
 php:

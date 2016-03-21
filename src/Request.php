@@ -118,7 +118,7 @@ class Request
         ProgressInterface $progress = null
     ) {
         $this->request = $request;
-        $this->options = array_replace_recursive($this->defaultOptions, $options);
+        $this->applyOptions($options);
         $this->httpClient = $httpClient;
         $this->loop = $loop;
 
@@ -395,5 +395,9 @@ class Request
             'request' => $request,
             'loop' => $this->loop,
         ]);
+    }
+    
+    private function applyOptions(array $options = []) {
+        $this->options = array_replace_recursive($this->defaultOptions, $options);
     }
 }

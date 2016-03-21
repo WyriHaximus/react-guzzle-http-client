@@ -73,7 +73,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             $requestArray,
             $client,
             $loop,
-            null,
             $request
         ));
 

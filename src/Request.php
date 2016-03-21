@@ -114,22 +114,12 @@ class Request
         RequestInterface $request,
         array $options,
         ReactHttpClient $httpClient,
-        LoopInterface $loop,
-        ProgressInterface $progress = null
+        LoopInterface $loop
     ) {
         $this->request = $request;
         $this->applyOptions($options);
         $this->httpClient = $httpClient;
         $this->loop = $loop;
-
-        if ($progress instanceof ProgressInterface) {
-            $this->progress = $progress;
-        } elseif (isset($this->options['client']['progress']) && is_callable($this->options['client']['progress'])) {
-            $this->progress = new Progress($this->options['client']['progress']);
-        } else {
-            $this->progress = new Progress(function () {
-            });
-        }
     }
 
     /**
@@ -146,11 +136,10 @@ class Request
         array $options,
         ReactHttpClient $httpClient,
         LoopInterface $loop,
-        ProgressInterface $progress = null,
         Request $requestObject = null
     ) {
         if ($requestObject === null) {
-            $requestObject = new static($request, $options, $httpClient, $loop, $progress);
+            $requestObject = new static($request, $options, $httpClient, $loop);
         }
         return $requestObject->perform();
     }
@@ -399,5 +388,12 @@ class Request
     
     private function applyOptions(array $options = []) {
         $this->options = array_replace_recursive($this->defaultOptions, $options);
+        
+        if (isset($this->options['client']['progress']) && is_callable($this->options['client']['progress'])) {
+            $this->progress = new Progress($this->options['client']['progress']);
+        } else {
+            $this->progress = new Progress(function () {
+            });
+        }
     }
 }

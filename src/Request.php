@@ -384,7 +384,8 @@ class Request
         ]);
     }
     
-    private function applyOptions(array $options = []) {
+    private function applyOptions(array $options = [])
+    {
         $this->options = array_replace_recursive($this->defaultOptions, $options);
         
         // provides backwards compatibility for Guzzle 3-5.

@@ -33,6 +33,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ],
             'body' => 'foo:bar',
         ];
+        
+        $options = [];
 
         $loop = Phake::mock('React\EventLoop\LoopInterface');
 
@@ -60,7 +62,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = Phake::partialMock(
             'WyriHaximus\React\Guzzle\HttpClient\Request',
             $psrRequest,
-            $requestArray,
+            $options,
             $client,
             $loop
         );
@@ -70,7 +72,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $request->send(
             $psrRequest,
-            $requestArray,
+            $options,
             $client,
             $loop,
             $request

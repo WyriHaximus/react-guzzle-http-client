@@ -104,9 +104,10 @@ class Request
 
     /**
      * @param RequestInterface $request
+     * @param array $options
      * @param ReactHttpClient $httpClient
      * @param LoopInterface $loop
-     * @param ProgressInterface $progress
+
      */
     protected function __construct(
         RequestInterface $request,
@@ -125,8 +126,6 @@ class Request
      * @param array $options
      * @param ReactHttpClient $httpClient
      * @param LoopInterface $loop
-     * @param ProgressInterface $progress
-     * @param Request $requestObject
      * @return \React\Promise\Promise
      */
     public static function send(

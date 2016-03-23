@@ -271,9 +271,8 @@ class Request
     protected function onResponse(HttpResponse $response, HttpRequest $request)
     {
         $this->httpResponse = $response;
-        if (!empty($this->options['sink'])) {
+        if (isset($this->options['sink'])) {
             $this->saveTo();
-            return;
         }
 
         $this->handleResponse($request);

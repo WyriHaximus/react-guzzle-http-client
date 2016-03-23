@@ -31,10 +31,5 @@
         "psr-4": {
             "WyriHaximus\\React\\Tests\\Guzzle\\HttpClient\\": "tests/"
         }
-    },
-    "extra": {
-    	"branch-alias": {
-    		"dev-option-handling": "3.0.x-dev"
-    	}
     }
 }

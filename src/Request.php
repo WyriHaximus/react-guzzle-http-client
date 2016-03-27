@@ -86,12 +86,10 @@ class Request
      * @var array
      */
     protected $defaultOptions = [
-        'client' => [
-            'stream' => false,
-            'connect_timeout' => 0,
-            'timeout' => 0,
-            'delay' => 0,
-        ],
+        'stream' => false,
+        'connect_timeout' => 0,
+        'timeout' => 0,
+        'delay' => 0,
     ];
 
     /**
@@ -106,30 +104,21 @@ class Request
 
     /**
      * @param RequestInterface $request
+     * @param array $options
      * @param ReactHttpClient $httpClient
      * @param LoopInterface $loop
-     * @param ProgressInterface $progress
+
      */
     protected function __construct(
         RequestInterface $request,
         array $options,
         ReactHttpClient $httpClient,
-        LoopInterface $loop,
-        ProgressInterface $progress = null
+        LoopInterface $loop
     ) {
         $this->request = $request;
-        $this->options = array_replace_recursive($this->defaultOptions, $options);
+        $this->applyOptions($options);
         $this->httpClient = $httpClient;
         $this->loop = $loop;
-
-        if ($progress instanceof ProgressInterface) {
-            $this->progress = $progress;
-        } elseif (isset($this->options['client']['progress']) && is_callable($this->options['client']['progress'])) {
-            $this->progress = new Progress($this->options['client']['progress']);
-        } else {
-            $this->progress = new Progress(function () {
-            });
-        }
     }
 
     /**
@@ -137,8 +126,6 @@ class Request
      * @param array $options
      * @param ReactHttpClient $httpClient
      * @param LoopInterface $loop
-     * @param ProgressInterface $progress
-     * @param Request $requestObject
      * @return \React\Promise\Promise
      */
     public static function send(
@@ -146,11 +133,10 @@ class Request
         array $options,
         ReactHttpClient $httpClient,
         LoopInterface $loop,
-        ProgressInterface $progress = null,
         Request $requestObject = null
     ) {
         if ($requestObject === null) {
-            $requestObject = new static($request, $options, $httpClient, $loop, $progress);
+            $requestObject = new static($request, $options, $httpClient, $loop);
         }
         return $requestObject->perform();
     }
@@ -163,7 +149,7 @@ class Request
         $this->deferred = new Deferred();
 
         $this->loop->addTimer(
-            (int)$this->options['client']['delay'] / 1000,
+            (int)$this->options['delay'] / 1000,
             function () {
                 $this->tickRequest();
             }
@@ -245,9 +231,9 @@ class Request
      */
     public function setConnectionTimeout(HttpRequest $request)
     {
-        if ($this->options['client']['connect_timeout'] > 0) {
+        if ($this->options['connect_timeout'] > 0) {
             $this->connectionTimer = $this->loop->addTimer(
-                $this->options['client']['connect_timeout'],
+                $this->options['connect_timeout'],
                 function () use ($request) {
                     $request->closeError(new \Exception('Connection time out'));
                 }
@@ -260,9 +246,9 @@ class Request
      */
     public function setRequestTimeout(HttpRequest $request)
     {
-        if ($this->options['client']['timeout'] > 0) {
+        if ($this->options['timeout'] > 0) {
             $this->requestTimer = $this->loop->addTimer(
-                $this->options['client']['timeout'],
+                $this->options['timeout'],
                 function () use ($request) {
                     $request->closeError(new \Exception('Transaction time out'));
                 }
@@ -284,9 +270,8 @@ class Request
     protected function onResponse(HttpResponse $response, HttpRequest $request)
     {
         $this->httpResponse = $response;
-        if (!empty($this->options['client']['save_to'])) {
+        if (isset($this->options['sink'])) {
             $this->saveTo();
-            return;
         }
 
         $this->handleResponse($request);
@@ -294,7 +279,7 @@ class Request
 
     protected function saveTo()
     {
-        $saveTo = $this->options['client']['save_to'];
+        $saveTo = $this->options['sink'];
 
         $writeStream = fopen($saveTo, 'w');
         stream_set_blocking($writeStream, 0);
@@ -372,7 +357,7 @@ class Request
             $this->httpResponse->getReasonPhrase()
         );
 
-        if (!$this->options['client']['stream']) {
+        if (!$this->options['stream']) {
             return $request->on('end', function () use ($response) {
                 $this->resolveResponse($response);
             });
@@ -395,5 +380,29 @@ class Request
             'request' => $request,
             'loop' => $this->loop,
         ]);
+    }
+    
+    private function applyOptions(array $options = [])
+    {
+        $this->options = array_replace_recursive($this->defaultOptions, $options);
+        
+        // provides backwards compatibility for Guzzle 3-5.
+        if (isset($this->options['client'])) {
+            $this->options = array_merge($this->options, $this->options['client']);
+            unset($this->options['client']);
+        }
+        
+        // provides for backwards compatibility for Guzzle 3-5
+        if (isset($this->options['save_to'])) {
+            $this->options['sink'] = $options['save_to'];
+            unset($this->options['save_to']);
+        }
+        
+        if (isset($this->options['progress']) && is_callable($this->options['progress'])) {
+            $this->progress = new Progress($this->options['progress']);
+        } else {
+            $this->progress = new Progress(function () {
+            });
+        }
     }
 }

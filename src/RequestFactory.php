@@ -21,6 +21,14 @@ use React\HttpClient\Client as HttpClient;
  */
 class RequestFactory
 {
+    /**
+     * 
+     * @param RequestInterface $request
+     * @param array $options
+     * @param HttpClient $httpClient
+     * @param LoopInterface $loop
+     * @return \React\Promise\Promise
+     */
     public function create(RequestInterface $request, array $options, HttpClient $httpClient, LoopInterface $loop)
     {
         return Request::send($request, $options, $httpClient, $loop);

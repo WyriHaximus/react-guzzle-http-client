@@ -33,6 +33,13 @@ class RequestFactory
      */
     public function create(RequestInterface $request, array $options, HttpClient $httpClient, LoopInterface $loop)
     {
-        return (new Browser($loop, new Sender($httpClient)))->send($request);
+        return (new Browser($loop, new Sender($httpClient)))
+            ->withOptions($this->convertOptions($options))
+            ->send($request);
+    }
+
+    protected function convertOptions(array $options)
+    {
+        return $options;
     }
 }

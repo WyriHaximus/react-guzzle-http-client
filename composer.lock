@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fd67aa6bf37774ee576585ba34e85be8",
-    "content-hash": "b9c21b22429cf0de734a6bc2dbe503f4",
+    "hash": "4868058f516ae8b7daa1664be27b112a",
+    "content-hash": "4c4c55d8b2ded375a88c64e37cd41e1b",
     "packages": [
         {
             "name": "clue/buzz-react",
@@ -59,6 +59,58 @@
                 "reactphp"
             ],
             "time": "2016-04-02 00:41:43"
+        },
+        {
+            "name": "clue/socks-react",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/php-socks-react.git",
+                "reference": "ad36da8c0a59493842023a55b54cbf0f7f204085"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/php-socks-react/zipball/ad36da8c0a59493842023a55b54cbf0f7f204085",
+                "reference": "ad36da8c0a59493842023a55b54cbf0f7f204085",
+                "shasum": ""
+            },
+            "require": {
+                "evenement/evenement": "~1.0|~2.0",
+                "php": ">=5.3",
+                "react/dns": "0.3.*|0.4.*",
+                "react/event-loop": "0.3.*|0.4.*",
+                "react/promise": "~1.0|~2.0",
+                "react/socket": "0.3.*|0.4.*",
+                "react/socket-client": "^0.5",
+                "react/stream": "0.3.*|0.4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\React\\Socks\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@lueck.tv"
+                }
+            ],
+            "description": "Async SOCKS proxy client and server (SOCKS4, SOCKS4a and SOCKS5)",
+            "homepage": "https://github.com/clue/php-socks-react",
+            "keywords": [
+                "async",
+                "react",
+                "socks client",
+                "socks protocol",
+                "socks server",
+                "tcp tunnel"
+            ],
+            "time": "2016-03-19 16:55:13"
         },
         {
             "name": "evenement/evenement",

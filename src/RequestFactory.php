@@ -16,6 +16,7 @@ use Clue\React\Socks\Client as SocksClient;
 use Psr\Http\Message\RequestInterface;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as HttpClient;
+use React\SocketClient\Connector;
 use React\SocketClient\ConnectorInterface;
 use React\SocketClient\DnsConnector;
 use ReflectionObject;

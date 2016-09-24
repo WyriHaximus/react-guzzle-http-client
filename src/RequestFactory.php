@@ -73,14 +73,7 @@ class RequestFactory
 
     protected function extractResolver(ConnectorInterface $connector)
     {
-        if ($connector instanceof Connector) {
-            $reflection = new ReflectionObject($connector);
-            $property = $reflection->getProperty('resolver');
-            $property->setAccessible(true);
-            return $property->getValue($connector);
-        }
-
-        if ($connector instanceof DnsConnector) {
+        if ($connector instanceof Connector || $connector instanceof DnsConnector) {
             $reflection = new ReflectionObject($connector);
             $property = $reflection->getProperty('resolver');
             $property->setAccessible(true);

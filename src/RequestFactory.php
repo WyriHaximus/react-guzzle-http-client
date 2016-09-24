@@ -48,14 +48,14 @@ class RequestFactory
 
     protected function createSender(array $options, HttpClient $httpClient, LoopInterface $loop)
     {
+        $connector = $this->extractConnector($httpClient);
+
         if (isset($options['proxy'])) {
-            $connector = $this->extractConnector($httpClient);
             $resolver = $this->extractResolver($connector);
-            $socks = new SocksClient($options['proxy'], $loop, $connector, $resolver);
-            return Sender::createFromLoopConnectors($loop, $socks->createConnector());
+            $connector = (new SocksClient($options['proxy'], $loop, $connector, $resolver))->createConnector();
         }
 
-        return new Sender($httpClient);
+        return Sender::createFromLoopConnectors($loop, $connector);
     }
 
     protected function convertOptions(array $options)

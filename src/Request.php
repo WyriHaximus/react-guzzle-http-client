@@ -186,7 +186,13 @@ class Request
         foreach ($this->request->getHeaders() as $key => $values) {
             $headers[$key] = implode(';', $values);
         }
-        return $this->httpClient->request($this->request->getMethod(), (string)$this->request->getUri(), $headers);
+
+        return $this->httpClient->request(
+            $this->request->getMethod(),
+            (string)$this->request->getUri(),
+            $headers,
+            $this->request->getProtocolVersion()
+        );
     }
 
     /**

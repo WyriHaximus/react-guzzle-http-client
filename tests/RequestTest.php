@@ -47,13 +47,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             $requestArray['url'],
             [
                 'voer' => 'bar;bor;ber',
-            ]
+            ],
+            '1.1'
         )->thenReturn($httpRequest);
 
         $psrRequest = Phake::mock('Psr\Http\Message\RequestInterface');
         Phake::when($psrRequest)->getHeaders()->thenReturn($requestArray['headers']);
         Phake::when($psrRequest)->getMethod()->thenReturn($requestArray['http_method']);
         Phake::when($psrRequest)->getUri()->thenReturn($requestArray['url']);
+        Phake::when($psrRequest)->getProtocolVersion()->thenReturn('1.1');
 
         $psrRequestBody = Phake::mock('Psr\Http\Message\StreamInterface');
         Phake::when($psrRequestBody)->getContents()->thenReturn($requestArray['body']);
@@ -103,7 +105,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                 $requestArray['url'],
                 [
                     'voer' => 'bar;bor;ber',
-                ]
+                ],
+                '1.1'
             ),
             Phake::verify($request)->setupListeners($httpRequest),
             Phake::verify($httpRequest, Phake::times(5))->on($this->isType('string'), $this->isType('callable')),

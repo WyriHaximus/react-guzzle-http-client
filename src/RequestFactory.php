@@ -48,7 +48,7 @@ class RequestFactory
 
     protected function createSender(array $options, HttpClient $httpClient, LoopInterface $loop)
     {
-        $connector = $this->extractConnector($httpClient);
+        $connector = $this->getProperty($httpClient, 'connector');
 
         if (isset($options['proxy'])) {
             $resolver = $this->extractResolver($connector);
@@ -74,12 +74,17 @@ class RequestFactory
     protected function extractResolver(ConnectorInterface $connector)
     {
         if ($connector instanceof Connector || $connector instanceof DnsConnector) {
-            $reflection = new ReflectionObject($connector);
-            $property = $reflection->getProperty('resolver');
-            $property->setAccessible(true);
-            return $property->getValue($connector);
+            return $this->getProperty($connector, 'resolver');
         }
 
         return null;
+    }
+
+    protected function getProperty($object, $property)
+    {
+        $reflection = new ReflectionObject($object);
+        $property = $reflection->getProperty($property);
+        $property->setAccessible(true);
+        return $property->getValue($object);
     }
 }

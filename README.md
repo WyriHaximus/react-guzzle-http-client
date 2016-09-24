@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/WyriHaximus/react-guzzle-http-client.png)](https://travis-ci.org/WyriHaximus/react-guzzle-http-client)
 [![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-guzzle-http-client/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-http-client)
 [![Total Downloads](https://poser.pugx.org/WyriHaximus/react-guzzle-http-client/downloads.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-http-client)
-[![Coverage Status](https://coveralls.io/repos/WyriHaximus/react-guzzle-http-client/badge.png)](https://coveralls.io/r/WyriHaximus/react-guzzle-http-client)
+[![Code Coverage](https://scrutinizer-ci.com/g/WyriHaximus/react-guzzle-http-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/WyriHaximus/react-guzzle-http-client/?branch=master)
 [![License](https://poser.pugx.org/wyrihaximus/react-guzzle-http-client/license.png)](https://packagist.org/packages/wyrihaximus/react-guzzle-http-client)
 
 Meta package for ReactPHP HttpClient adapters/handles for Guzzle [4](https://github.com/WyriHaximus/ReactGuzzle), [5](https://github.com/WyriHaximus/ReactGuzzleRing), and [6](https://github.com/WyriHaximus/react-guzzle-psr7).
@@ -12,7 +12,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## License ##
 
-Copyright 2015 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2016 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

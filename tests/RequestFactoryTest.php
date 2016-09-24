@@ -12,6 +12,9 @@ namespace WyriHaximus\React\Tests\Guzzle\HttpClient;
 
 use GuzzleHttp\Psr7\Request;
 use Phake;
+use React\EventLoop\Factory;
+use React\HttpClient\Client;
+use React\Promise\RejectedPromise;
 use WyriHaximus\React\Guzzle\HttpClient\RequestFactory;
 
 /**
@@ -42,19 +45,45 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
+        $loop = Factory::create();
+        $connector = $this->prophesize('React\SocketClient\ConnectorInterface');
+        $connector->create('example.com', 80)->shouldBeCalled()->willReturn(new RejectedPromise());
+        $secureConnector = $this->prophesize('React\SocketClient\ConnectorInterface');
+        $client = new Client($connector->reveal(), $secureConnector->reveal());
         $request = new Request('GET', 'http://example.com/');
         $this->assertInstanceOf(
             'React\Promise\PromiseInterface',
             $this->requestFactory->create(
                 $request,
                 [],
-                Phake::partialMock(
-                    'React\HttpClient\Client',
-                    Phake::mock('React\SocketClient\ConnectorInterface'),
-                    Phake::mock('React\SocketClient\ConnectorInterface')
-                ),
-                Phake::mock('\React\EventLoop\StreamSelectLoop')
+                $client,
+                $loop
             )
         );
+
+        $loop->run();
+    }
+
+    public function testCreateProxy()
+    {
+        $loop = Factory::create();
+        $connector = $this->prophesize('React\SocketClient\ConnectorInterface');
+        $connector->create('foo.bar', 1080)->shouldBeCalled()->willReturn(new RejectedPromise());
+        $secureConnector = $this->prophesize('React\SocketClient\ConnectorInterface');
+        $client = new Client($connector->reveal(), $secureConnector->reveal());
+        $request = new Request('GET', 'http://example.com/');
+        $this->assertInstanceOf(
+            'React\Promise\PromiseInterface',
+            $this->requestFactory->create(
+                $request,
+                [
+                    'proxy' => 'foo.bar',
+                ],
+                $client,
+                $loop
+            )
+        );
+
+        $loop->run();
     }
 }

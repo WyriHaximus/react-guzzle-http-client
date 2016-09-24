@@ -46,6 +46,12 @@ class RequestFactory
         });
     }
 
+    /**
+     * @param array $options
+     * @param HttpClient $httpClient
+     * @param LoopInterface $loop
+     * @return Sender
+     */
     protected function createSender(array $options, HttpClient $httpClient, LoopInterface $loop)
     {
         $connector = $this->getProperty($httpClient, 'connector');
@@ -58,19 +64,19 @@ class RequestFactory
         return Sender::createFromLoopConnectors($loop, $connector);
     }
 
+    /**
+     * @param array $options
+     * @return array
+     */
     protected function convertOptions(array $options)
     {
         return $options;
     }
 
-    protected function extractConnector(HttpClient $httpClient)
-    {
-        $reflection = new ReflectionObject($httpClient);
-        $property = $reflection->getProperty('connector');
-        $property->setAccessible(true);
-        return $property->getValue($httpClient);
-    }
-
+    /**
+     * @param ConnectorInterface $connector
+     * @return mixed|null
+     */
     protected function extractResolver(ConnectorInterface $connector)
     {
         if ($connector instanceof Connector || $connector instanceof DnsConnector) {
@@ -80,10 +86,15 @@ class RequestFactory
         return null;
     }
 
-    protected function getProperty($object, $property)
+    /**
+     * @param object $object
+     * @param string $desiredProperty
+     * @return mixed
+     */
+    protected function getProperty($object, $desiredProperty)
     {
         $reflection = new ReflectionObject($object);
-        $property = $reflection->getProperty($property);
+        $property = $reflection->getProperty($desiredProperty);
         $property->setAccessible(true);
         return $property->getValue($object);
     }

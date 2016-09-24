@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^5.4|^7.0",
-        "react/http-client": "^0.4.7",
+        "react/http-client": "^0.4.9",
         "react/dns": "^0.4.1",
         "psr/http-message": "^1.0",
         "guzzlehttp/psr7": "^1.0",

@@ -16,8 +16,7 @@
         "react/dns": "^0.4.1",
         "psr/http-message": "^1.0",
         "guzzlehttp/psr7": "^1.0",
-        "clue/socks-react": "^0.4.0"
-        "guzzlehttp/psr7": "^1.0",
+        "clue/socks-react": "^0.4.0",
         "react/stream": "^0.4.2"
     },
     "require-dev": {

@@ -38,10 +38,12 @@ class RequestFactory
      */
     public function create(RequestInterface $request, array $options, HttpClient $httpClient, LoopInterface $loop)
     {
-        $sender = $this->createSender($options, $httpClient, $loop);
-        return (new Browser($loop, $sender))
-            ->withOptions($this->convertOptions($options))
-            ->send($request);
+        return \WyriHaximus\React\futurePromise($loop)->then(function () use ($request, $options, $httpClient, $loop) {
+            $sender = $this->createSender($options, $httpClient, $loop);
+            return (new Browser($loop, $sender))
+                ->withOptions($this->convertOptions($options))
+                ->send($request);
+        });
     }
 
     protected function createSender(array $options, HttpClient $httpClient, LoopInterface $loop)

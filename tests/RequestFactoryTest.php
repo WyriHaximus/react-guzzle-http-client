@@ -10,6 +10,7 @@
  */
 namespace WyriHaximus\React\Tests\Guzzle\HttpClient;
 
+use GuzzleHttp\Psr7\Request;
 use Phake;
 use WyriHaximus\React\Guzzle\HttpClient\RequestFactory;
 
@@ -20,7 +21,9 @@ use WyriHaximus\React\Guzzle\HttpClient\RequestFactory;
  */
 class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 {
-
+    /**
+     * @var RequestFactory
+     */
     protected $requestFactory;
 
     public function setUp()
@@ -39,10 +42,11 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
+        $request = new Request('GET', 'http://example.com/');
         $this->assertInstanceOf(
             'React\Promise\PromiseInterface',
             $this->requestFactory->create(
-                Phake::mock('Psr\Http\Message\RequestInterface'),
+                $request,
                 [],
                 Phake::partialMock(
                     'React\HttpClient\Client',

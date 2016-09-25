@@ -1,6 +1,6 @@
 {
     "name": "wyrihaximus/react-guzzle-http-client",
-    "description": "Asyncronous GuzzleRing adapter powered by react/http-client",
+    "description": "Asynchronous GuzzleRing adapter powered by react/http-client",
     "license": "MIT",
     "authors": [
         {

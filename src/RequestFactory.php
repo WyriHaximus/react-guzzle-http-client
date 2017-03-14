@@ -80,6 +80,27 @@ class RequestFactory
                         $resolver
                     ))->createConnector();
                     break;
+                case 'socks4':
+                case 'socks4a':
+                    $proxyClient = new SocksProxyClient(
+                        $options['proxy'],
+                        $loop,
+                        $connector,
+                        $resolver
+                    );
+                    $proxyClient->setProtocolVersion(4);
+                    $connector = $proxyClient->createConnector();
+                    break;
+                case 'socks5':
+                    $proxyClient = new SocksProxyClient(
+                        $options['proxy'],
+                        $loop,
+                        $connector,
+                        $resolver
+                    );
+                    $proxyClient->setProtocolVersion(5);
+                    $connector = $proxyClient->createConnector();
+                    break;
             }
         }
 

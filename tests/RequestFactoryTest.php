@@ -72,6 +72,9 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
         return [
             ['http://127.0.0.1:8080'],
             ['socks://127.0.0.1:8080'],
+            ['socks4://127.0.0.1:8080'],
+            ['socks4a://127.0.0.1:8080'],
+            ['socks5://127.0.0.1:8080'],
         ];
     }
 

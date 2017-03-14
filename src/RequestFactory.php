@@ -73,38 +73,55 @@ class RequestFactory
                     $connector = new HttpProxyClient($options['proxy'], $connector);
                     break;
                 case 'socks':
-                    $connector = (new SocksProxyClient(
+                    $connector = $this->createSocksProxy(
                         $options['proxy'],
                         $loop,
                         $connector,
                         $resolver
-                    ))->createConnector();
+                    );
                     break;
                 case 'socks4':
                 case 'socks4a':
-                    $proxyClient = new SocksProxyClient(
+                    $connector = $this->createSocksProxy(
                         $options['proxy'],
                         $loop,
                         $connector,
-                        $resolver
+                        $resolver,
+                        4
                     );
-                    $proxyClient->setProtocolVersion(4);
-                    $connector = $proxyClient->createConnector();
                     break;
                 case 'socks5':
-                    $proxyClient = new SocksProxyClient(
+                    $connector = $this->createSocksProxy(
                         $options['proxy'],
                         $loop,
                         $connector,
-                        $resolver
+                        $resolver,
+                        5
                     );
-                    $proxyClient->setProtocolVersion(5);
-                    $connector = $proxyClient->createConnector();
                     break;
             }
         }
 
         return Sender::createFromLoopConnectors($loop, $connector);
+    }
+
+    protected function createSocksProxy(
+        $url,
+        $loop,
+        $connector,
+        $resolver,
+        $version = null
+    ) {
+        $proxyClient = new SocksProxyClient(
+            $url,
+            $loop,
+            $connector,
+            $resolver
+        );
+        if ($version !== null) {
+            $proxyClient->setProtocolVersion($version);
+        }
+        return $proxyClient->createConnector();
     }
 
     /**

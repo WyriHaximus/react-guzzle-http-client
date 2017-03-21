@@ -4,34 +4,36 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd9c9ed03a52bc6e4230720a53b32ad5",
+    "content-hash": "f30a33fac715349b50d98502ebbcbc9d",
     "packages": [
         {
             "name": "clue/buzz-react",
-            "version": "v0.5.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/clue/php-buzz-react.git",
-                "reference": "ae65feb2d15a9b0632b2b816c9037a6f6300f528"
+                "reference": "693c96d35f0cd0e4f0e1a51b976433a91792eff9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clue/php-buzz-react/zipball/ae65feb2d15a9b0632b2b816c9037a6f6300f528",
-                "reference": "ae65feb2d15a9b0632b2b816c9037a6f6300f528",
+                "url": "https://api.github.com/repos/clue/php-buzz-react/zipball/693c96d35f0cd0e4f0e1a51b976433a91792eff9",
+                "reference": "693c96d35f0cd0e4f0e1a51b976433a91792eff9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3",
-                "psr/http-message": "~1.0",
-                "react/dns": "0.3.*|0.4.*",
-                "react/event-loop": "0.3.*|0.4.*",
-                "react/http-client": "0.3.*|0.4.*",
+                "psr/http-message": "^1.0",
+                "react/dns": "^0.4.1 || ^0.3",
+                "react/event-loop": "^0.4 || ^0.3",
+                "react/http-client": "^0.4 || ^0.3",
                 "react/promise": "^2 || ^1.1",
-                "react/socket-client": "^0.5 || ^0.4 || ^0.3",
-                "ringcentral/psr7": "~1.2"
+                "react/socket-client": "^0.5 || ^0.4.5",
+                "react/stream": "^0.4 || ^0.3.1",
+                "ringcentral/psr7": "^1.2"
             },
             "require-dev": {
-                "clue/block-react": "~1.0"
+                "clue/block-react": "^1.0",
+                "phpunit/phpunit": "^4.5"
             },
             "type": "library",
             "autoload": {
@@ -57,7 +59,7 @@
                 "http client",
                 "reactphp"
             ],
-            "time": "2016-04-02T00:41:43+00:00"
+            "time": "2016-10-21T10:29:37+00:00"
         },
         {
             "name": "clue/http-proxy-react",

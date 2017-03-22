@@ -18,6 +18,7 @@ use Psr\Http\Message\RequestInterface;
 use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as HttpClient;
+use React\SocketClient\TimeoutConnector;
 use ReflectionObject;
 
 /**
@@ -109,6 +110,10 @@ class RequestFactory
                     );
                     break;
             }
+        }
+
+        if (isset($options['connect_timeout'])) {
+            $connector = new TimeoutConnector($connector, $options['connect_timeout'], $loop);
         }
 
         return Sender::createFromLoopConnectors($loop, $connector);

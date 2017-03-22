@@ -43,7 +43,16 @@ class RequestFactory
         HttpClient $httpClient,
         LoopInterface $loop
     ) {
-        return \WyriHaximus\React\futurePromise($loop)->then(function () use (
+        $options = $this->convertOptions($options);
+
+        if (isset($options['delay'])) {
+            $promise = \WyriHaximus\React\timedPromise($loop, $options['delay']);
+        }
+        if (!isset($promise)) {
+            $promise = \WyriHaximus\React\futurePromise($loop);
+        }
+        
+        return $promise->then(function () use (
             $request,
             $options,
             $resolver,
@@ -52,7 +61,7 @@ class RequestFactory
         ) {
             $sender = $this->createSender($options, $resolver, $httpClient, $loop);
             return (new Browser($loop, $sender))
-                ->withOptions($this->convertOptions($options))
+                ->withOptions($options)
                 ->send($request);
         });
     }
@@ -130,7 +139,42 @@ class RequestFactory
      */
     protected function convertOptions(array $options)
     {
+        // provides backwards compatibility for Guzzle 3-5.
+        if (isset($options['client'])) {
+            $options = array_merge($options, $options['client']);
+            unset($options['client']);
+        }
+
+        // provides for backwards compatibility for Guzzle 3-5
+        if (isset($options['save_to'])) {
+            $options['sink'] = $options['save_to'];
+            unset($options['save_to']);
+        }
+
+        if (isset($options['allow_redirects'])) {
+            $this->convertRedirectOption($options);
+        }
+
         return $options;
+    }
+
+    protected function convertRedirectOption(&$options)
+    {
+        $option = $options['allow_redirects'];
+        unset($options['allow_redirects']);
+
+        if (is_bool($option)) {
+            $options['followRedirects'] = $option;
+            return;
+        }
+
+        if (is_array($option)) {
+            if (isset($option['max'])) {
+                $options['maxRedirects'] = $option['max'];
+            }
+            $options['followRedirects'] = true;
+            return;
+        }
     }
 
     /**

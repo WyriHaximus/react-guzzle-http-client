@@ -18,8 +18,11 @@ use Psr\Http\Message\RequestInterface;
 use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as HttpClient;
+use React\Promise\Deferred;
 use React\SocketClient\TimeoutConnector;
+use React\Stream\Stream;
 use ReflectionObject;
+use React\Stream\ReadableStreamInterface;
 
 /**
  * Class RequestFactory
@@ -63,8 +66,38 @@ class RequestFactory
             $sender = $this->createSender($options, $resolver, $httpClient, $loop);
             return (new Browser($loop, $sender))
                 ->withOptions($options)
-                ->send($request);
+                ->send($request)->then(function ($response) use ($loop, $options) {
+                    if (!isset($options['sink'])) {
+                        return \React\Promise\resolve($response);
+                    }
+
+                    return \React\Promise\resolve($this->sink($loop, $response, $options['sink']));
+                });
         });
+    }
+
+    protected function sink($loop, $response, $target)
+    {
+        $deferred = new Deferred();
+        $writeStream = fopen($target, 'w');
+        stream_set_blocking($writeStream, 0);
+        $saveToStream = new Stream($writeStream, $loop);
+
+        $saveToStream->on(
+            'end',
+            function () use ($deferred, $response) {
+                $deferred->resolve($response);
+            }
+        );
+
+        $body = $response->getBody();
+        if ($body instanceof ReadableStreamInterface) {
+            $body->pipe($saveToStream);
+        } else {
+            $saveToStream->end($body->getContents());
+        }
+
+        return $deferred->promise();
     }
 
     /**

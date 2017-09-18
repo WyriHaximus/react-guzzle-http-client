@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Factory as EventLoopFactory;
+use React\HttpClient\Client;
 use RingCentral\Psr7\Request;
 use WyriHaximus\React\Guzzle\HttpClient\RequestFactory;
 
@@ -9,12 +10,10 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR 
 
 $loop = EventLoopFactory::create();
 
-
 $dnsResolverFactory = new React\Dns\Resolver\Factory();
 $dnsResolver = $dnsResolverFactory->createCached('8.8.8.8', $loop);
 
-$factory = new React\HttpClient\Factory();
-$client = $factory->create($loop, $dnsResolver);
+$client = new Client($loop);
 
 $requestFactory = new RequestFactory();
 

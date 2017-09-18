@@ -19,10 +19,11 @@ use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as HttpClient;
 use React\Promise\Deferred;
-use React\SocketClient\TimeoutConnector;
-use React\Stream\Stream;
-use ReflectionObject;
+use React\Socket\Connector;
+use React\Socket\TimeoutConnector;
 use React\Stream\ReadableStreamInterface;
+use React\Stream\WritableResourceStream;
+use ReflectionObject;
 
 /**
  * Class RequestFactory
@@ -59,11 +60,10 @@ class RequestFactory
         return $promise->then(function () use (
             $request,
             $options,
-            $resolver,
             $httpClient,
             $loop
         ) {
-            $sender = $this->createSender($options, $resolver, $httpClient, $loop);
+            $sender = $this->createSender($options, $httpClient, $loop);
             return (new Browser($loop, $sender))
                 ->withOptions($options)
                 ->send($request)->then(function ($response) use ($loop, $options) {
@@ -80,8 +80,7 @@ class RequestFactory
     {
         $deferred = new Deferred();
         $writeStream = fopen($target, 'w');
-        stream_set_blocking($writeStream, 0);
-        $saveToStream = new Stream($writeStream, $loop);
+        $saveToStream = new WritableResourceStream($writeStream, $loop);
 
         $saveToStream->on(
             'end',
@@ -106,40 +105,35 @@ class RequestFactory
      * @param LoopInterface $loop
      * @return Sender
      */
-    protected function createSender(array $options, Resolver $resolver, HttpClient $httpClient, LoopInterface $loop)
+    protected function createSender(array $options, HttpClient $httpClient, LoopInterface $loop)
     {
         $connector = $this->getProperty($httpClient, 'connector');
 
         if (isset($options['proxy'])) {
             switch (parse_url($options['proxy'], PHP_URL_SCHEME)) {
                 case 'http':
-                    $connector = new HttpProxyClient($options['proxy'], $connector);
+                    $connector = new Connector(
+                        $loop,
+                        [
+                            'tcp' => new HttpProxyClient(
+                                $options['proxy'],
+                                $connector
+                            ),
+                        ]
+                    );
                     break;
                 case 'socks':
-                    $connector = $this->createSocksProxy(
-                        $options['proxy'],
-                        $loop,
-                        $connector,
-                        $resolver
-                    );
-                    break;
                 case 'socks4':
                 case 'socks4a':
-                    $connector = $this->createSocksProxy(
-                        $options['proxy'],
-                        $loop,
-                        $connector,
-                        $resolver,
-                        4
-                    );
-                    break;
                 case 'socks5':
-                    $connector = $this->createSocksProxy(
-                        $options['proxy'],
+                    $connector = new Connector(
                         $loop,
-                        $connector,
-                        $resolver,
-                        5
+                        [
+                            'tcp' => new SocksProxyClient(
+                                $options['proxy'],
+                                $connector
+                            ),
+                        ]
                     );
                     break;
             }
@@ -149,26 +143,7 @@ class RequestFactory
             $connector = new TimeoutConnector($connector, $options['connect_timeout'], $loop);
         }
 
-        return Sender::createFromLoopConnectors($loop, $connector);
-    }
-
-    protected function createSocksProxy(
-        $url,
-        $loop,
-        $connector,
-        $resolver,
-        $version = null
-    ) {
-        $proxyClient = new SocksProxyClient(
-            $url,
-            $loop,
-            $connector,
-            $resolver
-        );
-        if ($version !== null) {
-            $proxyClient->setProtocolVersion($version);
-        }
-        return $proxyClient->createConnector();
+        return $connector;
     }
 
     /**

@@ -601,25 +601,25 @@
         },
         {
             "name": "react/promise-timer",
-            "version": "v1.2.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise-timer.git",
-                "reference": "3bc527fbd1201a193ab41c19b9a770d71a3514af"
+                "reference": "a11206938ca2394dc7bb368f5da25cd4533fa603"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise-timer/zipball/3bc527fbd1201a193ab41c19b9a770d71a3514af",
-                "reference": "3bc527fbd1201a193ab41c19b9a770d71a3514af",
+                "url": "https://api.github.com/repos/reactphp/promise-timer/zipball/a11206938ca2394dc7bb368f5da25cd4533fa603",
+                "reference": "a11206938ca2394dc7bb368f5da25cd4533fa603",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3",
                 "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3.5",
-                "react/promise": "~2.1|~1.2"
+                "react/promise": "^2.7.0 || ^1.2.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.0 || ^4.8"
+                "phpunit/phpunit": "^6.4 || ^5.7 || ^4.8.35"
             },
             "type": "library",
             "autoload": {
@@ -640,8 +640,8 @@
                     "email": "christian@lueck.tv"
                 }
             ],
-            "description": "Trivial timeout implementation for Promises",
-            "homepage": "https://github.com/react/promise-timer",
+            "description": "A trivial implementation of timeouts for Promises, built on top of ReactPHP.",
+            "homepage": "https://github.com/reactphp/promise-timer",
             "keywords": [
                 "async",
                 "event-loop",
@@ -650,7 +650,7 @@
                 "timeout",
                 "timer"
             ],
-            "time": "2017-08-08T16:30:19+00:00"
+            "time": "2018-06-13T16:45:37+00:00"
         },
         {
             "name": "react/socket",
@@ -857,26 +857,26 @@
     "packages-dev": [
         {
             "name": "clue/block-react",
-            "version": "v1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/clue/php-block-react.git",
-                "reference": "966c255580ec7a0259338798ddb89f77e121fe9e"
+                "url": "https://github.com/clue/reactphp-block.git",
+                "reference": "a4a5cd64ded3b15affa168a2419fa4eda08b96aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clue/php-block-react/zipball/966c255580ec7a0259338798ddb89f77e121fe9e",
-                "reference": "966c255580ec7a0259338798ddb89f77e121fe9e",
+                "url": "https://api.github.com/repos/clue/reactphp-block/zipball/a4a5cd64ded3b15affa168a2419fa4eda08b96aa",
+                "reference": "a4a5cd64ded3b15affa168a2419fa4eda08b96aa",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3",
                 "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3.5",
-                "react/promise": "~2.1|~1.2",
-                "react/promise-timer": "~1.0"
+                "react/promise": "^2.7 || ^1.2.1",
+                "react/promise-timer": "^1.5"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.0 || ^4.8"
+                "phpunit/phpunit": "^6.4 || ^5.7 || ^4.8.35"
             },
             "type": "library",
             "autoload": {
@@ -894,17 +894,19 @@
                     "email": "christian@lueck.tv"
                 }
             ],
-            "description": "Integrate async React PHP components into your blocking environment",
-            "homepage": "https://github.com/clue/php-block-react",
+            "description": "Lightweight library that eases integrating async components built for ReactPHP in a traditional, blocking environment.",
+            "homepage": "https://github.com/clue/reactphp-block",
             "keywords": [
                 "async",
+                "await",
                 "blocking",
                 "event loop",
                 "promise",
                 "reactphp",
+                "sleep",
                 "synchronous"
             ],
-            "time": "2017-08-03T13:14:15+00:00"
+            "time": "2018-06-14T08:50:53+00:00"
         },
         {
             "name": "doctrine/instantiator",

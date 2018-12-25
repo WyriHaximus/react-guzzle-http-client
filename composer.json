@@ -13,7 +13,7 @@
         "php": "^5.4|^7.0",
         "clue/buzz-react": "^2.0 || ^1.4",
         "clue/http-proxy-react": "^1.2",
-        "clue/socks-react": "^0.8.5",
+        "clue/socks-react": "^1.0.0",
         "guzzlehttp/psr7": "^1.0",
         "psr/http-message": "^1.0",
         "wyrihaximus/ticking-promise": "^1.6"

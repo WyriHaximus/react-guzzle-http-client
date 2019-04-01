@@ -164,6 +164,10 @@ class RequestFactory
             unset($options['save_to']);
         }
 
+        if (isset($options['delay'])) {
+            $options['delay'] = $options['delay']/1000;
+        }
+        
         if (isset($options['allow_redirects'])) {
             $this->convertRedirectOption($options);
         }
